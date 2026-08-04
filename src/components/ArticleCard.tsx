@@ -16,6 +16,20 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
+  // Helper untuk menentukan gaya label kategori
+  const getCategoryStyles = (category: string) => {
+    switch (category) {
+      case 'Analisis Spasial':
+        return 'bg-indigo-100 text-indigo-700';
+      case 'Remote Sensing':
+        return 'bg-teal-100 text-teal-700';
+      case 'Perencanaan Wilayah':
+        return 'bg-emerald-100 text-emerald-700';
+      default:
+        return 'bg-amber-100 text-amber-700';
+    }
+  };
+
   return (
     <div className="group flex flex-col bg-white rounded-2xl border border-slate-100/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden hover:-translate-y-1">
       {/* Image Container */}
@@ -32,7 +46,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           </div>
         )}
         <div className="absolute top-4 left-4">
-          <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white bg-blue-600/90 backdrop-blur-sm rounded-full">
+          <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full hover:scale-105 transition-transform inline-block ${getCategoryStyles(article.category)}`}>
             {article.category}
           </span>
         </div>
@@ -51,7 +65,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           </div>
         </div>
 
-        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors font-heading">
           {article.title}
         </h3>
         

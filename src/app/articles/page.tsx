@@ -66,12 +66,12 @@ export default function ArticlesPage() {
       <div className="mb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100/50 text-blue-700 font-medium text-sm mb-6">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-violet-100 to-fuchsia-100 text-violet-800 font-semibold text-sm mb-6 border border-violet-200/50 shadow-sm backdrop-blur-sm">
               <Compass size={16} className="mr-2" />
               <span>Pusat Pengetahuan</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
-              Etalase <span className="text-blue-600">Metodologi</span>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6 font-heading">
+              Etalase <span className="text-violet-600">Metodologi</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
               Jelajahi kumpulan artikel, riset, dan panduan metodologi terbaru seputar 

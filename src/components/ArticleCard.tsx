@@ -17,7 +17,7 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ article }: ArticleCardProps) {
   return (
-    <div className="group flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
+    <div className="group flex flex-col bg-white rounded-2xl border border-slate-100/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden hover:-translate-y-1">
       {/* Image Container */}
       <div className="relative w-full h-48 bg-gray-100 overflow-hidden">
         {article.imageUrl ? (

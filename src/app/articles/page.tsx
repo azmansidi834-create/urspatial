@@ -5,57 +5,30 @@ import { Search, Filter, Compass } from 'lucide-react';
 const DUMMY_ARTICLES: Article[] = [
   {
     id: '1',
-    title: 'Analisis Spasial Kerentanan Banjir Menggunakan Metode AHP dan GIS di Perkotaan',
+    title: 'Integrasi Metode AHP dan GIS untuk Pemetaan Zona Kerentanan Banjir',
     category: 'Analisis Spasial',
-    excerpt: 'Pendekatan Analytical Hierarchy Process (AHP) diintegrasikan dengan Sistem Informasi Geografis (GIS) untuk memetakan dan menganalisis zona rentan banjir berdasarkan parameter elevasi, curah hujan, dan tutupan lahan.',
-    date: '12 Okt 2023',
-    author: 'Tim Riset GeoPlan',
+    excerpt: 'Metodologi pembobotan Analytical Hierarchy Process (AHP) yang digabungkan dengan analisis overlay pada parameter curah hujan, kelerengan, dan tutupan lahan untuk menghasilkan peta risiko spasial.',
+    date: '14 Agustus 2023',
+    author: 'Jurnal Tata Ruang & Geospasial',
     imageUrl: 'https://images.unsplash.com/photo-1599839619722-39751411ea63?q=80&w=800&auto=format&fit=crop'
   },
   {
     id: '2',
-    title: 'Penerapan Machine Learning untuk Deteksi Perubahan Tutupan Lahan dari Citra Satelit',
+    title: 'Pemantauan Kerapatan Vegetasi Menggunakan Algoritma NDVI pada Google Earth Engine',
     category: 'Remote Sensing',
-    excerpt: 'Metodologi penggunaan algoritma Random Forest pada Google Earth Engine untuk mengklasifikasikan dan memantau perubahan tutupan lahan di kawasan peri-urban selama satu dekade terakhir.',
-    date: '28 Sep 2023',
-    author: 'Sarah Anindya',
+    excerpt: 'Ekstraksi nilai Normalized Difference Vegetation Index (NDVI) menggunakan citra satelit Landsat 8 berbasis cloud computing untuk menganalisis degradasi ruang terbuka hijau secara berkala.',
+    date: '02 November 2023',
+    author: 'Jurnal Penginderaan Jauh Terapan',
     imageUrl: 'https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?q=80&w=800&auto=format&fit=crop'
   },
   {
     id: '3',
-    title: 'Evaluasi Kesesuaian Lahan Pemukiman Berbasis Multi-Criteria Decision Analysis (MCDA)',
+    title: 'Model Cellular Automata-Markov Chain untuk Prediksi Perubahan Penggunaan Lahan',
     category: 'Perencanaan Wilayah',
-    excerpt: 'Panduan komprehensif melakukan MCDA untuk menentukan lokasi optimal pembangunan pemukiman baru dengan meminimalisir dampak lingkungan dan memaksimalkan aksesibilitas jaringan transportasi.',
-    date: '05 Nov 2023',
-    author: 'Dr. Budi Santoso',
+    excerpt: 'Pendekatan pemodelan spasial dinamis menggunakan probabilitas transisi Markov untuk memproyeksikan arah ekspansi kawasan terbangun di wilayah peri-urban pada masa depan.',
+    date: '28 Februari 2024',
+    author: 'Buletin Perencanaan Wilayah & Kota',
     imageUrl: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: '4',
-    title: 'Metode Network Analysis untuk Optimasi Rute Pengangkutan Sampah Perkotaan',
-    category: 'Network Analysis',
-    excerpt: 'Studi kasus pemanfaatan ArcGIS Network Analyst dalam mendesain sistem rute distribusi dan pengangkutan logistik/sampah yang efisien di wilayah padat penduduk.',
-    date: '15 Nov 2023',
-    author: 'Rina Wijaya',
-    imageUrl: 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: '5',
-    title: 'Pemodelan Harga Lahan Menggunakan Geographically Weighted Regression (GWR)',
-    category: 'Geostatistik',
-    excerpt: 'Bagaimana metode GWR dapat mengatasi autokorelasi spasial dalam menganalisis faktor-faktor yang mempengaruhi nilai tanah di kawasan metropolitan.',
-    date: '02 Des 2023',
-    author: 'Andi Pradana',
-    imageUrl: 'https://images.unsplash.com/photo-1524813686514-a57563d77965?q=80&w=800&auto=format&fit=crop'
-  },
-  {
-    id: '6',
-    title: 'Integrasi BIM dan GIS untuk Perencanaan Infrastruktur Kota Pintar (Smart City)',
-    category: 'BIM & GIS',
-    excerpt: 'Metodologi penggabungan data Building Information Modeling dengan pemetaan geospasial untuk perencanaan utilitas cerdas dan manajemen aset infrastruktur.',
-    date: '20 Des 2023',
-    author: 'Lab Tata Kota',
-    imageUrl: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?q=80&w=800&auto=format&fit=crop'
   }
 ];
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react';
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import { 
@@ -10,12 +10,70 @@ import {
   Bold, 
   Italic, 
   Strikethrough, 
+  Heading1,
   Heading2, 
-  Image as ImageIcon, 
-  Code,
+  List,
   UploadCloud,
-  Plus
 } from 'lucide-react';
+
+const MenuBar = ({ editor }: { editor: any }) => {
+  if (!editor) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-1 mb-6 bg-white/50 backdrop-blur border border-gray-100 p-2 rounded-2xl shadow-sm sticky top-24 z-10">
+      <button
+        onClick={() => editor.chain().focus().toggleBold().run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('bold') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Bold"
+      >
+        <Bold size={18} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleItalic().run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('italic') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Italic"
+      >
+        <Italic size={18} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('strike') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Strikethrough"
+      >
+        <Strikethrough size={18} />
+      </button>
+      
+      <div className="w-px h-6 bg-gray-200 mx-2"></div>
+      
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Heading 1"
+      >
+        <Heading1 size={18} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Heading 2"
+      >
+        <Heading2 size={18} />
+      </button>
+      
+      <div className="w-px h-6 bg-gray-200 mx-2"></div>
+
+      <button
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('bulletList') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Bullet List"
+      >
+        <List size={18} />
+      </button>
+    </div>
+  );
+};
 
 export default function CreateArticleDistractionFree() {
   const editor = useEditor({
@@ -62,57 +120,7 @@ export default function CreateArticleDistractionFree() {
             
             {/* Tiptap Editor Container */}
             <div className="relative">
-              
-              {editor && (
-                <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-                  <div className="bg-gray-900 text-white shadow-xl rounded-xl overflow-hidden flex items-center px-1 py-1 space-x-1 border border-gray-800">
-                    <button
-                      onClick={() => editor.chain().focus().toggleBold().run()}
-                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('bold') ? 'bg-gray-800 text-violet-400' : ''}`}
-                    >
-                      <Bold size={16} />
-                    </button>
-                    <button
-                      onClick={() => editor.chain().focus().toggleItalic().run()}
-                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('italic') ? 'bg-gray-800 text-violet-400' : ''}`}
-                    >
-                      <Italic size={16} />
-                    </button>
-                    <button
-                      onClick={() => editor.chain().focus().toggleStrike().run()}
-                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('strike') ? 'bg-gray-800 text-violet-400' : ''}`}
-                    >
-                      <Strikethrough size={16} />
-                    </button>
-                    <div className="w-px h-6 bg-gray-700 mx-1"></div>
-                    <button
-                      onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-800 text-violet-400' : ''}`}
-                    >
-                      <Heading2 size={16} />
-                    </button>
-                  </div>
-                </BubbleMenu>
-              )}
-
-              {editor && (
-                <FloatingMenu editor={editor} tippyOptions={{ duration: 100, placement: 'left' }}>
-                  <div className="flex items-center space-x-2 mr-4">
-                    <button className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-900 transition-all bg-white shadow-sm group">
-                      <Plus size={16} className="group-hover:rotate-90 transition-transform" />
-                    </button>
-                    <div className="hidden group-hover:flex space-x-1 bg-white shadow-md rounded-full px-2 py-1 border border-gray-100">
-                      <button className="p-2 rounded-full hover:bg-gray-100 text-gray-600">
-                        <ImageIcon size={16} />
-                      </button>
-                      <button className="p-2 rounded-full hover:bg-gray-100 text-gray-600">
-                        <Code size={16} />
-                      </button>
-                    </div>
-                  </div>
-                </FloatingMenu>
-              )}
-
+              <MenuBar editor={editor} />
               <EditorContent editor={editor} className="editor-container" />
             </div>
           </div>

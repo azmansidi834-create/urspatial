@@ -1,150 +1,208 @@
+'use client';
+
 import React from 'react';
-import { UploadCloud, ArrowLeft, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
+import { 
+  ArrowLeft, 
+  Bold, 
+  Italic, 
+  Strikethrough, 
+  Heading2, 
+  Image as ImageIcon, 
+  Code,
+  UploadCloud,
+  Plus
+} from 'lucide-react';
 
-export default function CreateArticlePage() {
+export default function CreateArticleDistractionFree() {
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: 'Tell your story...',
+        emptyEditorClass: 'is-editor-empty',
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class: 'prose prose-lg prose-slate focus:outline-none max-w-none min-h-[500px] text-gray-800 leading-relaxed',
+      },
+    },
+  });
+
   return (
-    <div className="min-h-screen bg-slate-50 pt-16 pb-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="mb-10">
-          <Link href="/articles" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors mb-6 group">
-            <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" />
-            Back to Articles
-          </Link>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight font-heading">
-            Publish Your <span className="text-violet-600">Research</span>
-          </h1>
-          <p className="text-gray-500 mt-3 text-lg">
-            Share your methodology, spatial analysis, or urban planning insights with the community.
-          </p>
+    <div className="min-h-screen bg-slate-50 text-gray-900 font-sans selection:bg-violet-200">
+      
+      {/* Top Navigation */}
+      <div className="w-full px-6 py-4 flex items-center justify-between">
+        <Link href="/articles" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors group">
+          <ArrowLeft size={16} className="mr-2 group-hover:-translate-x-1 transition-transform" />
+          Back
+        </Link>
+        <div className="text-sm font-medium text-gray-400">
+          Drafting...
         </div>
+      </div>
 
-        {/* Form Container */}
-        <div className="bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-gray-100">
-          <form className="space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+        <div className="flex flex-col lg:flex-row gap-12">
+          
+          {/* Main Canvas (Kiri/Tengah - 70%) */}
+          <div className="lg:w-8/12 pt-8 lg:pt-12">
             
-            {/* Title & Author Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label htmlFor="title" className="block text-sm font-bold text-gray-900">
-                  Judul Artikel
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  placeholder="Contoh: Analisis Kesesuaian Lahan..."
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="author" className="block text-sm font-bold text-gray-900">
-                  Nama Penulis
-                </label>
-                <input
-                  type="text"
-                  id="author"
-                  placeholder="Nama Lengkap atau Tim"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Category & Tags Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label htmlFor="category" className="block text-sm font-bold text-gray-900">
-                  Kategori
-                </label>
-                <select
-                  id="category"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm text-gray-700 appearance-none"
-                >
-                  <option value="" disabled selected>Pilih kategori...</option>
-                  <option value="Analisis Spasial">Analisis Spasial</option>
-                  <option value="Remote Sensing">Remote Sensing</option>
-                  <option value="Perencanaan Wilayah">Perencanaan Wilayah</option>
-                  <option value="Lainnya">Lainnya</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="tags" className="block text-sm font-bold text-gray-900">
-                  Tags / Topik
-                </label>
-                <input
-                  type="text"
-                  id="tags"
-                  placeholder="BIM, GIS, Urban (pisahkan dengan koma)"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Excerpt */}
-            <div className="space-y-2">
-              <label htmlFor="excerpt" className="block text-sm font-bold text-gray-900">
-                Cuplikan / Ringkasan
-              </label>
-              <textarea
-                id="excerpt"
-                rows={3}
-                placeholder="Maksimal 2-3 kalimat ringkasan tentang riset/metodologi Anda."
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm resize-none"
-              />
-            </div>
-
-            {/* Image Upload Dropzone */}
-            <div className="space-y-2">
-              <label className="block text-sm font-bold text-gray-900">
-                Gambar Thumbnail
-              </label>
-              <div className="mt-2 flex justify-center rounded-2xl border-2 border-dashed border-gray-300 px-6 py-12 hover:border-violet-500 hover:bg-violet-50/50 transition-colors cursor-pointer group">
-                <div className="text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-violet-100 mb-4 group-hover:scale-110 transition-transform">
-                    <UploadCloud className="h-8 w-8 text-violet-600" aria-hidden="true" />
-                  </div>
-                  <div className="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer rounded-md font-semibold text-violet-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-violet-600 focus-within:ring-offset-2 hover:text-violet-500"
+            {/* Title Input */}
+            <input
+              type="text"
+              placeholder="Title"
+              className="w-full text-5xl lg:text-6xl font-extrabold font-heading text-gray-900 bg-transparent border-none outline-none placeholder-gray-300 mb-8"
+            />
+            
+            {/* Tiptap Editor Container */}
+            <div className="relative">
+              
+              {editor && (
+                <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
+                  <div className="bg-gray-900 text-white shadow-xl rounded-xl overflow-hidden flex items-center px-1 py-1 space-x-1 border border-gray-800">
+                    <button
+                      onClick={() => editor.chain().focus().toggleBold().run()}
+                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('bold') ? 'bg-gray-800 text-violet-400' : ''}`}
                     >
-                      <span>Upload a file</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
+                      <Bold size={16} />
+                    </button>
+                    <button
+                      onClick={() => editor.chain().focus().toggleItalic().run()}
+                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('italic') ? 'bg-gray-800 text-violet-400' : ''}`}
+                    >
+                      <Italic size={16} />
+                    </button>
+                    <button
+                      onClick={() => editor.chain().focus().toggleStrike().run()}
+                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('strike') ? 'bg-gray-800 text-violet-400' : ''}`}
+                    >
+                      <Strikethrough size={16} />
+                    </button>
+                    <div className="w-px h-6 bg-gray-700 mx-1"></div>
+                    <button
+                      onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                      className={`p-2 rounded-lg hover:bg-gray-800 transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-800 text-violet-400' : ''}`}
+                    >
+                      <Heading2 size={16} />
+                    </button>
                   </div>
-                  <p className="text-xs leading-5 text-gray-500 mt-2">
-                    Upload your geomap or research visual here (PNG, JPG up to 5MB)
-                  </p>
+                </BubbleMenu>
+              )}
+
+              {editor && (
+                <FloatingMenu editor={editor} tippyOptions={{ duration: 100, placement: 'left' }}>
+                  <div className="flex items-center space-x-2 mr-4">
+                    <button className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-900 transition-all bg-white shadow-sm group">
+                      <Plus size={16} className="group-hover:rotate-90 transition-transform" />
+                    </button>
+                    <div className="hidden group-hover:flex space-x-1 bg-white shadow-md rounded-full px-2 py-1 border border-gray-100">
+                      <button className="p-2 rounded-full hover:bg-gray-100 text-gray-600">
+                        <ImageIcon size={16} />
+                      </button>
+                      <button className="p-2 rounded-full hover:bg-gray-100 text-gray-600">
+                        <Code size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </FloatingMenu>
+              )}
+
+              <EditorContent editor={editor} className="editor-container" />
+            </div>
+          </div>
+
+          {/* Sidebar Pengaturan Publikasi (Kanan - 30%) */}
+          <div className="lg:w-4/12 pt-8 lg:pt-12">
+            <div className="sticky top-24 bg-white/60 backdrop-blur-md rounded-3xl p-8 border border-gray-200/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-6">
+                Publish Settings
+              </h3>
+              
+              <div className="space-y-6">
+                {/* Penulis */}
+                <div className="space-y-2">
+                  <label htmlFor="author" className="block text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    Nama Penulis
+                  </label>
+                  <input
+                    type="text"
+                    id="author"
+                    placeholder="Nama Lengkap atau Tim"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
+                  />
+                </div>
+
+                {/* Kategori */}
+                <div className="space-y-2">
+                  <label htmlFor="category" className="block text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    Kategori
+                  </label>
+                  <select
+                    id="category"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm text-gray-700 appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled selected>Pilih kategori...</option>
+                    <option value="Analisis Spasial">Analisis Spasial</option>
+                    <option value="Remote Sensing">Remote Sensing</option>
+                    <option value="Perencanaan Wilayah">Perencanaan Wilayah</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
+
+                {/* Tags */}
+                <div className="space-y-2">
+                  <label htmlFor="tags" className="block text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    Tags / Topik
+                  </label>
+                  <input
+                    type="text"
+                    id="tags"
+                    placeholder="BIM, GIS, Urban (pisahkan dengan koma)"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
+                  />
+                </div>
+
+                {/* Dropzone Thumbnail */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide">
+                    Gambar Thumbnail
+                  </label>
+                  <div className="mt-2 flex justify-center rounded-2xl border-2 border-dashed border-gray-300 px-4 py-8 hover:border-violet-500 hover:bg-violet-50/50 transition-all cursor-pointer group bg-white">
+                    <div className="text-center">
+                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 mb-3 group-hover:scale-110 group-hover:bg-violet-100 transition-all">
+                        <UploadCloud className="h-6 w-6 text-gray-400 group-hover:text-violet-600 transition-colors" aria-hidden="true" />
+                      </div>
+                      <div className="flex text-xs leading-5 text-gray-600 justify-center">
+                        <span className="relative cursor-pointer rounded-md font-semibold text-violet-600 hover:text-violet-500">
+                          Upload visual
+                        </span>
+                      </div>
+                      <p className="text-[10px] leading-4 text-gray-400 mt-1">
+                        PNG/JPG up to 5MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <div className="pt-4">
+                  <button
+                    type="button"
+                    className="w-full px-6 py-3.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-violet-600 transition-all shadow-[0_4px_14px_0_rgb(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.23)] hover:-translate-y-0.5"
+                  >
+                    Publish Article
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Main Content */}
-            <div className="space-y-2">
-              <label htmlFor="content" className="block text-sm font-bold text-gray-900">
-                Isi Artikel / Metodologi
-              </label>
-              <textarea
-                id="content"
-                rows={12}
-                placeholder="Tuliskan detail riset, kode algoritma, atau langkah metodologi di sini..."
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
-              />
-            </div>
-
-            {/* Submit Button */}
-            <div className="pt-6 border-t border-gray-100 flex justify-end">
-              <button
-                type="button"
-                className="px-8 py-3.5 bg-gray-900 text-white font-bold rounded-full hover:bg-violet-600 transition-colors shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
-              >
-                Publish Article
-              </button>
-            </div>
-
-          </form>
         </div>
       </div>
     </div>

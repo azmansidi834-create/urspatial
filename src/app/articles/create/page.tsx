@@ -166,6 +166,21 @@ const MenuBar = ({ editor }: { editor: any }) => {
       >
         <ListOrdered size={18} />
       </button>
+
+      <div className="w-px h-6 bg-gray-200 mx-2"></div>
+      
+      <button
+        onClick={() => {
+          const url = window.prompt('Masukkan URL Gambar:');
+          if (url) {
+            editor.chain().focus().setImage({ src: url }).run();
+          }
+        }}
+        className="p-2.5 rounded-xl hover:bg-gray-100 transition-colors text-gray-600"
+        title="Insert Image"
+      >
+        <Camera size={18} />
+      </button>
     </div>
   );
 };
@@ -252,9 +267,10 @@ export default function CreateArticleDistractionFree() {
                   </label>
                   <select
                     id="category"
+                    defaultValue=""
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm text-gray-700 appearance-none cursor-pointer"
                   >
-                    <option value="" disabled selected>Pilih kategori...</option>
+                    <option value="" disabled>Pilih kategori...</option>
                     <option value="Analisis Spasial">Analisis Spasial</option>
                     <option value="Remote Sensing">Remote Sensing</option>
                     <option value="Perencanaan Wilayah">Perencanaan Wilayah</option>

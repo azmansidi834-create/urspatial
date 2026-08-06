@@ -77,7 +77,11 @@ const FloatingMediaButton = ({ editor }: { editor: any }) => {
       style={{ top: topPos, left: '-3.5rem' }} // -left-14 is -3.5rem
     >
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        type="button"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          setIsExpanded(!isExpanded);
+        }}
         className={`w-9 h-9 flex items-center justify-center rounded-full border border-gray-400 text-gray-500 hover:text-gray-900 hover:border-gray-900 transition-all duration-200 bg-white shadow-sm ${isExpanded ? 'rotate-45' : ''}`}
         title="Add media"
       >
@@ -90,7 +94,9 @@ const FloatingMediaButton = ({ editor }: { editor: any }) => {
         }`}
       >
         <button
-          onClick={() => {
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
             const url = window.prompt('URL Gambar:');
             if (url) {
               editor.chain().focus().setImage({ src: url }).run();
@@ -103,12 +109,20 @@ const FloatingMediaButton = ({ editor }: { editor: any }) => {
           <Camera size={16} />
         </button>
         <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
           className="w-9 h-9 flex shrink-0 items-center justify-center rounded-full border border-gray-200 hover:border-gray-300 bg-white text-rose-500 shadow-sm transition-all hover:bg-gray-50"
           title="Video"
         >
           <Video size={16} />
         </button>
         <button
+          type="button"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            editor.chain().focus().toggleCodeBlock().run();
+            setIsExpanded(false);
+          }}
           className="w-9 h-9 flex shrink-0 items-center justify-center rounded-full border border-gray-200 hover:border-gray-300 bg-white text-indigo-500 shadow-sm transition-all hover:bg-gray-50"
           title="Code Block"
         >
@@ -127,28 +141,33 @@ const MenuBar = ({ editor }: { editor: any }) => {
   return (
     <div className="flex flex-wrap items-center gap-1 mb-6 bg-white/50 backdrop-blur border border-gray-100 p-2 rounded-2xl shadow-sm sticky top-24 z-20">
       <button
-        onClick={() => editor.chain().focus().toggleBold().run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleBold().run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('bold') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Bold"
       >
         <Bold size={18} />
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleItalic().run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleItalic().run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('italic') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Italic"
       >
         <Italic size={18} />
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleStrike().run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleStrike().run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('strike') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Strikethrough"
       >
         <Strikethrough size={18} />
       </button>
       <button
-        onClick={() => {
+        type="button"
+        onMouseDown={(e) => {
+          e.preventDefault();
           const url = window.prompt('Masukkan tautan (URL):');
           if (url === null) return;
           if (url === '') {
@@ -162,25 +181,36 @@ const MenuBar = ({ editor }: { editor: any }) => {
       >
         <LinkIcon size={18} />
       </button>
+      <button
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleCodeBlock().run(); }}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('codeBlock') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Code Block"
+      >
+        <Code size={18} />
+      </button>
       
       <div className="w-px h-6 bg-gray-200 mx-2"></div>
       
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 1 }).run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Heading 1"
       >
         <Heading1 size={18} />
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 2 }).run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Heading 2"
       >
         <Heading2 size={18} />
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleHeading({ level: 3 }).run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Heading 3"
       >
@@ -190,14 +220,16 @@ const MenuBar = ({ editor }: { editor: any }) => {
       <div className="w-px h-6 bg-gray-200 mx-2"></div>
 
       <button
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleBulletList().run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('bulletList') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Bullet List"
       >
         <List size={18} />
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        type="button"
+        onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().toggleOrderedList().run(); }}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('orderedList') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
         title="Ordered List"
       >
@@ -207,7 +239,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
       <div className="w-px h-6 bg-gray-200 mx-2"></div>
       
       <button
-        onClick={() => {
+        type="button"
+        onMouseDown={(e) => {
+          e.preventDefault();
           const url = window.prompt('Masukkan URL Gambar:');
           if (url) {
             editor.chain().focus().setImage({ src: url }).run();
@@ -272,7 +306,7 @@ export default function CreateArticleDistractionFree() {
             <MenuBar editor={editor} />
             
             {/* Tiptap Editor Container with exact typography classes */}
-            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-ol:list-decimal !prose-ol:pl-5 prose-ul:list-disc !prose-ul:pl-5 prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-800 relative ml-16 min-h-[500px]">
+            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-ol:list-decimal !prose-ol:pl-5 prose-ul:list-disc !prose-ul:pl-5 prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-800 prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-code:text-violet-600 prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded relative ml-16 min-h-[500px]">
               <FloatingMediaButton editor={editor} />
               <EditorContent editor={editor} className="editor-container" />
             </div>

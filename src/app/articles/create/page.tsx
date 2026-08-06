@@ -18,12 +18,15 @@ import {
   ListOrdered,
   UploadCloud,
   Plus,
-  Camera
+  Camera,
+  Video,
+  Code
 } from 'lucide-react';
 
 const FloatingMediaButton = ({ editor }: { editor: any }) => {
-  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [topPos, setTopPos] = useState(0);
 
   useEffect(() => {
     if (!editor) return;
@@ -36,19 +39,21 @@ const FloatingMediaButton = ({ editor }: { editor: any }) => {
       const isEmpty = $anchor.parent.textContent.length === 0;
 
       if (isParagraph && isEmpty && selection.empty) {
+        // Find DOM element to get its offset top relative to the relative parent
         const dom = editor.view.domAtPos($anchor.pos);
         const element = dom.node instanceof HTMLElement ? dom.node : dom.node.parentElement;
         
         if (element) {
-          // Calculate offset relative to the closest relative parent (the editor wrapper)
-          setPosition({ top: element.offsetTop, left: -48 });
+          setTopPos(element.offsetTop);
+          setIsVisible(true);
         }
       } else {
-        setPosition(null);
+        setIsVisible(false);
         setIsExpanded(false);
       }
     };
 
+    editor.on('selectionUpdate', updateMenu);
     editor.on('transaction', updateMenu);
     editor.on('focus', updateMenu);
     
@@ -56,43 +61,58 @@ const FloatingMediaButton = ({ editor }: { editor: any }) => {
     setTimeout(updateMenu, 100);
 
     return () => {
+      editor.off('selectionUpdate', updateMenu);
       editor.off('transaction', updateMenu);
       editor.off('focus', updateMenu);
     };
   }, [editor]);
 
-  if (!position) return null;
+  if (!isVisible) return null;
 
   return (
     <div
-      className="absolute flex items-center z-10 transition-all duration-200"
-      style={{ top: position.top, left: position.left }}
+      className="absolute z-10 flex items-center transition-all duration-200"
+      style={{ top: topPos, left: '-3.5rem' }} // -left-14 is -3.5rem
     >
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className={`w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-900 transition-all bg-white shadow-sm ${isExpanded ? 'rotate-45' : ''}`}
+        className={`w-9 h-9 flex items-center justify-center rounded-full border border-gray-400 text-gray-500 hover:text-gray-900 hover:border-gray-900 transition-all duration-200 bg-white shadow-sm ${isExpanded ? 'rotate-45' : ''}`}
         title="Add media"
       >
         <Plus size={18} />
       </button>
 
-      {isExpanded && (
-        <div className="ml-2 flex space-x-1 bg-white shadow-md rounded-full px-2 py-1 border border-gray-100 animate-in fade-in slide-in-from-left-2">
-          <button
-            onClick={() => {
-              const url = window.prompt('Masukkan URL Gambar:');
-              if (url) {
-                editor.chain().focus().setImage({ src: url }).run();
-              }
+      <div
+        className={`flex items-center space-x-2 ml-2 transition-all duration-200 overflow-hidden ${
+          isExpanded ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0'
+        }`}
+      >
+        <button
+          onClick={() => {
+            const url = window.prompt('URL Gambar:');
+            if (url) {
+              editor.chain().focus().setImage({ src: url }).run();
               setIsExpanded(false);
-            }}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
-            title="Add Image"
-          >
-            <Camera size={18} />
-          </button>
-        </div>
-      )}
+            }
+          }}
+          className="w-9 h-9 flex shrink-0 items-center justify-center rounded-full border border-gray-200 hover:border-gray-300 bg-white text-emerald-600 shadow-sm transition-all hover:bg-gray-50"
+          title="Image"
+        >
+          <Camera size={16} />
+        </button>
+        <button
+          className="w-9 h-9 flex shrink-0 items-center justify-center rounded-full border border-gray-200 hover:border-gray-300 bg-white text-rose-500 shadow-sm transition-all hover:bg-gray-50"
+          title="Video"
+        >
+          <Video size={16} />
+        </button>
+        <button
+          className="w-9 h-9 flex shrink-0 items-center justify-center rounded-full border border-gray-200 hover:border-gray-300 bg-white text-indigo-500 shadow-sm transition-all hover:bg-gray-50"
+          title="Code Block"
+        >
+          <Code size={16} />
+        </button>
+      </div>
     </div>
   );
 };
@@ -197,7 +217,8 @@ export default function CreateArticleDistractionFree() {
     ],
     editorProps: {
       attributes: {
-        class: 'prose prose-lg prose-slate max-w-none focus:outline-none min-h-[500px] text-gray-800 leading-relaxed',
+        // Original basic class string remains empty string here because we are moving the classes to a wrapper div
+        class: '',
       },
     },
   });
@@ -232,8 +253,8 @@ export default function CreateArticleDistractionFree() {
             {/* Toolbar */}
             <MenuBar editor={editor} />
             
-            {/* Tiptap Editor Container */}
-            <div className="relative pl-12 lg:pl-16">
+            {/* Tiptap Editor Container with exact typography classes */}
+            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-ol:list-decimal !prose-ol:pl-5 prose-ul:list-disc !prose-ul:pl-5 relative ml-16 min-h-[500px]">
               <FloatingMediaButton editor={editor} />
               <EditorContent editor={editor} className="editor-container" />
             </div>

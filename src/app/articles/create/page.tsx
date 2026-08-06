@@ -1,20 +1,101 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
+import ImageExtension from '@tiptap/extension-image';
 import { 
   ArrowLeft, 
   Bold, 
   Italic, 
   Strikethrough, 
   Heading1,
-  Heading2, 
+  Heading2,
+  Heading3, 
   List,
+  ListOrdered,
   UploadCloud,
+  Plus,
+  Camera
 } from 'lucide-react';
+
+const FloatingMediaButton = ({ editor }: { editor: any }) => {
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const updateMenu = () => {
+      const { selection } = editor.state;
+      const { $anchor } = selection;
+      
+      const isParagraph = $anchor.parent.type.name === 'paragraph';
+      const isEmpty = $anchor.parent.textContent.length === 0;
+
+      if (isParagraph && isEmpty && selection.empty) {
+        const dom = editor.view.domAtPos($anchor.pos);
+        const element = dom.node instanceof HTMLElement ? dom.node : dom.node.parentElement;
+        
+        if (element) {
+          // Calculate offset relative to the closest relative parent (the editor wrapper)
+          setPosition({ top: element.offsetTop, left: -48 });
+        }
+      } else {
+        setPosition(null);
+        setIsExpanded(false);
+      }
+    };
+
+    editor.on('transaction', updateMenu);
+    editor.on('focus', updateMenu);
+    
+    // Initial check
+    setTimeout(updateMenu, 100);
+
+    return () => {
+      editor.off('transaction', updateMenu);
+      editor.off('focus', updateMenu);
+    };
+  }, [editor]);
+
+  if (!position) return null;
+
+  return (
+    <div
+      className="absolute flex items-center z-10 transition-all duration-200"
+      style={{ top: position.top, left: position.left }}
+    >
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-gray-900 transition-all bg-white shadow-sm ${isExpanded ? 'rotate-45' : ''}`}
+        title="Add media"
+      >
+        <Plus size={18} />
+      </button>
+
+      {isExpanded && (
+        <div className="ml-2 flex space-x-1 bg-white shadow-md rounded-full px-2 py-1 border border-gray-100 animate-in fade-in slide-in-from-left-2">
+          <button
+            onClick={() => {
+              const url = window.prompt('Masukkan URL Gambar:');
+              if (url) {
+                editor.chain().focus().setImage({ src: url }).run();
+              }
+              setIsExpanded(false);
+            }}
+            className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors"
+            title="Add Image"
+          >
+            <Camera size={18} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const MenuBar = ({ editor }: { editor: any }) => {
   if (!editor) {
@@ -22,7 +103,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1 mb-6 bg-white/50 backdrop-blur border border-gray-100 p-2 rounded-2xl shadow-sm sticky top-24 z-10">
+    <div className="flex flex-wrap items-center gap-1 mb-6 bg-white/50 backdrop-blur border border-gray-100 p-2 rounded-2xl shadow-sm sticky top-24 z-20">
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('bold') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
@@ -61,6 +142,13 @@ const MenuBar = ({ editor }: { editor: any }) => {
       >
         <Heading2 size={18} />
       </button>
+      <button
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Heading 3"
+      >
+        <Heading3 size={18} />
+      </button>
       
       <div className="w-px h-6 bg-gray-200 mx-2"></div>
 
@@ -70,6 +158,13 @@ const MenuBar = ({ editor }: { editor: any }) => {
         title="Bullet List"
       >
         <List size={18} />
+      </button>
+      <button
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('orderedList') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Ordered List"
+      >
+        <ListOrdered size={18} />
       </button>
     </div>
   );
@@ -83,10 +178,11 @@ export default function CreateArticleDistractionFree() {
         placeholder: 'Tell your story...',
         emptyEditorClass: 'is-editor-empty',
       }),
+      ImageExtension,
     ],
     editorProps: {
       attributes: {
-        class: 'prose prose-lg prose-slate focus:outline-none max-w-none min-h-[500px] text-gray-800 leading-relaxed',
+        class: 'prose prose-lg prose-slate max-w-none focus:outline-none min-h-[500px] text-gray-800 leading-relaxed',
       },
     },
   });
@@ -118,9 +214,12 @@ export default function CreateArticleDistractionFree() {
               className="w-full text-5xl lg:text-6xl font-extrabold font-heading text-gray-900 bg-transparent border-none outline-none placeholder-gray-300 mb-8"
             />
             
+            {/* Toolbar */}
+            <MenuBar editor={editor} />
+            
             {/* Tiptap Editor Container */}
-            <div className="relative">
-              <MenuBar editor={editor} />
+            <div className="relative pl-12 lg:pl-16">
+              <FloatingMediaButton editor={editor} />
               <EditorContent editor={editor} className="editor-container" />
             </div>
           </div>

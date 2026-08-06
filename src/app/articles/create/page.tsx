@@ -6,6 +6,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import ImageExtension from '@tiptap/extension-image';
+import LinkExtension from '@tiptap/extension-link';
 import { 
   ArrowLeft, 
   Bold, 
@@ -20,7 +21,8 @@ import {
   Plus,
   Camera,
   Video,
-  Code
+  Code,
+  Link as LinkIcon
 } from 'lucide-react';
 
 const FloatingMediaButton = ({ editor }: { editor: any }) => {
@@ -145,6 +147,21 @@ const MenuBar = ({ editor }: { editor: any }) => {
       >
         <Strikethrough size={18} />
       </button>
+      <button
+        onClick={() => {
+          const url = window.prompt('Masukkan tautan (URL):');
+          if (url === null) return;
+          if (url === '') {
+            editor.chain().focus().extendMarkRange('link').unsetLink().run();
+            return;
+          }
+          editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+        }}
+        className={`p-2.5 rounded-xl hover:bg-gray-100 transition-colors ${editor.isActive('link') ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-600'}`}
+        title="Link"
+      >
+        <LinkIcon size={18} />
+      </button>
       
       <div className="w-px h-6 bg-gray-200 mx-2"></div>
       
@@ -214,6 +231,7 @@ export default function CreateArticleDistractionFree() {
         emptyEditorClass: 'is-editor-empty',
       }),
       ImageExtension,
+      LinkExtension.configure({ openOnClick: false, autolink: true }),
     ],
     editorProps: {
       attributes: {
@@ -254,7 +272,7 @@ export default function CreateArticleDistractionFree() {
             <MenuBar editor={editor} />
             
             {/* Tiptap Editor Container with exact typography classes */}
-            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-ol:list-decimal !prose-ol:pl-5 prose-ul:list-disc !prose-ul:pl-5 relative ml-16 min-h-[500px]">
+            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-ol:list-decimal !prose-ol:pl-5 prose-ul:list-disc !prose-ul:pl-5 prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-800 relative ml-16 min-h-[500px]">
               <FloatingMediaButton editor={editor} />
               <EditorContent editor={editor} className="editor-container" />
             </div>

@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -260,8 +262,70 @@ const MenuBar = ({ editor }: { editor: any }) => {
 };
 
 const lowlight = createLowlight(common);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 export default function CreateArticleDistractionFree() {
+  const router = useRouter();
+  const [title, setTitle] = useState('');
+  const [authorName, setAuthorName] = useState('');
+  const [category, setCategory] = useState('');
+  const [tagsString, setTagsString] = useState('');
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const handlePublish = async () => {
+    if (!title || !editor || editor.getHTML() === '<p></p>' || editor.isEmpty) {
+      alert('Judul dan isi artikel tidak boleh kosong!');
+      return;
+    }
+
+    setIsPublishing(true);
+    try {
+      let thumbnailUrl = null;
+
+      if (thumbnailFile) {
+        const fileExt = thumbnailFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('article-images')
+          .upload(fileName, thumbnailFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('article-images')
+          .getPublicUrl(fileName);
+
+        thumbnailUrl = publicUrlData.publicUrl;
+      }
+
+      const tagsArray = tagsString ? tagsString.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+      const { error: insertError } = await supabase
+        .from('articles')
+        .insert([
+          {
+            title: title,
+            content: editor.getHTML(),
+            author_name: authorName,
+            category: category,
+            tags: tagsArray,
+            thumbnail_url: thumbnailUrl
+          }
+        ]);
+
+      if (insertError) throw insertError;
+
+      alert('Berhasil diterbitkan!');
+      router.push('/');
+    } catch (error: any) {
+      alert(`Gagal menerbitkan: ${error.message}`);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ codeBlock: false }),
@@ -305,6 +369,8 @@ export default function CreateArticleDistractionFree() {
             <input
               type="text"
               placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="w-full text-5xl lg:text-6xl font-extrabold font-heading text-gray-900 bg-transparent border-none outline-none placeholder-gray-300 mb-8"
             />
             
@@ -334,6 +400,8 @@ export default function CreateArticleDistractionFree() {
                   <input
                     type="text"
                     id="author"
+                    value={authorName}
+                    onChange={(e) => setAuthorName(e.target.value)}
                     placeholder="Nama Lengkap atau Tim"
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                   />
@@ -346,7 +414,8 @@ export default function CreateArticleDistractionFree() {
                   </label>
                   <select
                     id="category"
-                    defaultValue=""
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm text-gray-700 appearance-none cursor-pointer"
                   >
                     <option value="" disabled>Pilih kategori...</option>
@@ -365,6 +434,8 @@ export default function CreateArticleDistractionFree() {
                   <input
                     type="text"
                     id="tags"
+                    value={tagsString}
+                    onChange={(e) => setTagsString(e.target.value)}
                     placeholder="BIM, GIS, Urban (pisahkan dengan koma)"
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                   />
@@ -375,30 +446,33 @@ export default function CreateArticleDistractionFree() {
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide">
                     Gambar Thumbnail
                   </label>
-                  <div className="mt-2 flex justify-center rounded-2xl border-2 border-dashed border-gray-300 px-4 py-8 hover:border-violet-500 hover:bg-violet-50/50 transition-all cursor-pointer group bg-white">
+                  <label className="mt-2 flex justify-center rounded-2xl border-2 border-dashed border-gray-300 px-4 py-8 hover:border-violet-500 hover:bg-violet-50/50 transition-all cursor-pointer group bg-white">
                     <div className="text-center">
                       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 mb-3 group-hover:scale-110 group-hover:bg-violet-100 transition-all">
                         <UploadCloud className="h-6 w-6 text-gray-400 group-hover:text-violet-600 transition-colors" aria-hidden="true" />
                       </div>
                       <div className="flex text-xs leading-5 text-gray-600 justify-center">
                         <span className="relative cursor-pointer rounded-md font-semibold text-violet-600 hover:text-violet-500">
-                          Upload visual
+                          {thumbnailFile ? thumbnailFile.name : 'Upload visual'}
                         </span>
+                        <input type="file" className="sr-only" accept="image/png, image/jpeg, image/jpg" onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)} />
                       </div>
                       <p className="text-[10px] leading-4 text-gray-400 mt-1">
                         PNG/JPG up to 5MB
                       </p>
                     </div>
-                  </div>
+                  </label>
                 </div>
 
                 {/* Submit Button */}
                 <div className="pt-4">
                   <button
                     type="button"
-                    className="w-full px-6 py-3.5 bg-gray-900 text-white text-sm font-bold rounded-xl hover:bg-violet-600 transition-all shadow-[0_4px_14px_0_rgb(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(124,58,237,0.23)] hover:-translate-y-0.5"
+                    onClick={handlePublish}
+                    disabled={isPublishing}
+                    className={`w-full px-6 py-3.5 bg-gray-900 text-white text-sm font-bold rounded-xl transition-all shadow-[0_4px_14px_0_rgb(0,0,0,0.1)] ${isPublishing ? 'opacity-70 cursor-not-allowed' : 'hover:bg-violet-600 hover:shadow-[0_6px_20px_rgba(124,58,237,0.23)] hover:-translate-y-0.5'}`}
                   >
-                    Publish Article
+                    {isPublishing ? 'Publishing...' : 'Publish Article'}
                   </button>
                 </div>
               </div>

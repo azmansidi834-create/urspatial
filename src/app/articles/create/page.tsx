@@ -7,6 +7,9 @@ import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import ImageExtension from '@tiptap/extension-image';
 import LinkExtension from '@tiptap/extension-link';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { common, createLowlight } from 'lowlight';
+import 'highlight.js/styles/github.css';
 import { 
   ArrowLeft, 
   Bold, 
@@ -256,16 +259,19 @@ const MenuBar = ({ editor }: { editor: any }) => {
   );
 };
 
+const lowlight = createLowlight(common);
+
 export default function CreateArticleDistractionFree() {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({ codeBlock: false }),
       Placeholder.configure({
         placeholder: 'Tell your story...',
         emptyEditorClass: 'is-editor-empty',
       }),
       ImageExtension,
       LinkExtension.configure({ openOnClick: false, autolink: true }),
+      CodeBlockLowlight.configure({ lowlight }),
     ],
     editorProps: {
       attributes: {
@@ -306,7 +312,7 @@ export default function CreateArticleDistractionFree() {
             <MenuBar editor={editor} />
             
             {/* Tiptap Editor Container with exact typography classes */}
-            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-ol:list-decimal !prose-ol:pl-5 prose-ul:list-disc !prose-ul:pl-5 prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-800 prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:rounded-lg prose-code:text-violet-600 prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded relative ml-16 min-h-[500px]">
+            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-ol:list-decimal !prose-ol:pl-5 prose-ul:list-disc !prose-ul:pl-5 prose-a:text-blue-600 prose-a:underline hover:prose-a:text-blue-800 prose-pre:bg-gray-50 prose-pre:text-gray-900 prose-pre:border prose-pre:border-gray-200 prose-pre:rounded-md prose-code:bg-transparent prose-code:text-inherit prose-code:p-0 prose-code:font-mono relative ml-16 min-h-[500px]">
               <FloatingMediaButton editor={editor} />
               <EditorContent editor={editor} className="editor-container" />
             </div>
